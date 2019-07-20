@@ -14,12 +14,12 @@ def monkey_trouble(a_smile, b_smile):
 
 # Warmup-1 > sum_double 
 def sum_double(a, b):
-    sum = a + b
+    total = a + b
 
     if a == b:
-        return sum * 2
+        return total * 2
     
-    return sum
+    return total
 
 # Warmup-1 > diff21 
 def diff21(n):

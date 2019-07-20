@@ -27,8 +27,8 @@ def count_code(inString):
     count = 0
     lenStr = len(inString)
     for i in range(lenStr):
-        if str[i] == 'c' and i < lenStr - 3:
-            if str[i + 1] == 'o' and str[i + 3] == 'e':
+        if inString[i] == 'c' and i < lenStr - 3:
+            if inString[i + 1] == 'o' and inString[i + 3] == 'e':
                 count += 1
     return count
 

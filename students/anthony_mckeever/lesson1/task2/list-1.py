@@ -22,10 +22,10 @@ def common_end(a, b):
 
 # List-1 > sum3 
 def sum3(nums):
-    sum = 0
+    total = 0
     for i in nums:
-        sum += i
-    return sum
+        total += i
+    return total
 
 # List-1 > rotate_left3
 def rotate_left3(nums):
@@ -51,12 +51,12 @@ def max_end3(nums):
 
 # List-1 > sum2 
 def sum2(nums):
-    sum = 0
+    total = 0
     for i in range(len(nums)):
         if i > 1:
             break
-        sum += nums[i]
-    return sum
+        total += nums[i]
+    return total
 
 # List-1 > middle_way 
 def middle_way(a, b):

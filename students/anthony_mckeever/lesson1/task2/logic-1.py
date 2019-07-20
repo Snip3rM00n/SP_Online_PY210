@@ -45,10 +45,10 @@ def caught_speeding(speed, is_birthday):
 
 # Logic-1 > sorta_sum 
 def sorta_sum(a, b):
-    sum = a + b
-    if sum in range(10, 20):
+    total = a + b
+    if total in range(10, 20):
         return 20
-    return sum
+    return total
 
 # Logic-1 > alarm_clock 
 def alarm_clock(day, vacation):
@@ -57,7 +57,7 @@ def alarm_clock(day, vacation):
     if vacation:
         if weekend:
             return "off"
-    return "10:00"
+        return "10:00"
 
     if not vacation:
         if weekend:
