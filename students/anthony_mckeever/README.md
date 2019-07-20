@@ -13,9 +13,9 @@ Each course lesson will contain its own folder.  The folders will use the naming
 ### Source Map:
 `-- anthony_mckeever    <Root folder of Anthony's course materials>
     `-- lesson1         <Content for lesson 1>
+        |-- task1       <Content for lesson 1 task 1>
+        `-- task2       <Content for lesson 1 task 2>
 
 ## Branching
 
 Branching will be done for each lesson so as to not polute master with in development and potentially buggy code.
-
-*TODO: Test execution detail*
