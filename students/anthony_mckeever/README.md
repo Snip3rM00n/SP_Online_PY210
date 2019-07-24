@@ -12,10 +12,11 @@ Each course lesson will contain its own folder.  The folders will use the naming
 
 ### Source Map:
 `-- anthony_mckeever    <Root folder of Anthony's course materials>
-    `-- lesson1         <Content for lesson 1>
-        |-- task1       <Content for lesson 1 task 1>
-        `-- task2       <Content for lesson 1 task 2>
+    |-- lesson1         <Content for lesson 1>
+    |   |-- task1       <Content for lesson 1 task 1>
+    |   `-- task2       <Content for lesson 1 task 2>
+    `-- lesson2         <Content for lesson 2>
 
 ## Branching
 
-Branching will be done for each lesson so as to not polute master with in development and potentially buggy code.
+Branching will be done for each lesson so as to not polute master with in development and potentially buggy code.  Each branch go through a self code review to ensure quality and completeness before merging into `Snip3rM00n/SP_OnlinePy201/Master`.  After all items for the lesson or activity are in `Snip3rM00n/SP_OnlinePy201/Master` they will then be sent as a PR to Upstream (UWPCE-PythonCert-ClassReops/SP_OnlinePy201).
