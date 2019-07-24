@@ -1,5 +1,5 @@
 """
-Programming In Python - Lesson 2 Task 1: Grid Printer
+Programming In Python - Lesson 2 Exercise 1: Grid Printer
 Code Poet: Anthony McKeever
 Start Date: 07/22/2019
 End Date: 07/23/2019
