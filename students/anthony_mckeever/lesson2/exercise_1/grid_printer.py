@@ -16,11 +16,9 @@ def printer(template, multiple, endChar, times):
     :param times:       How many times to print the same template in the console
                         on a new line.
     """
-    printMe = (template * multiple) + endChar
+    printMe = " ".join((template * multiple) + endChar)
     for i in range(times):
-        for c in printMe:
-            print(c, end=" ")
-        print()
+        print(printMe)
 
 def grid_sequencer(dimensions, size):
     """

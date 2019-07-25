@@ -1,5 +1,5 @@
 """
-Programming In Python - Lesson 2 Exercise 1: Fizz Buzz
+Programming In Python - Lesson 2 Exercise 2: Fizz Buzz
 Code Poet: Anthony McKeever
 Start Date: 07/23/2019
 End Date: 07/23/2019
