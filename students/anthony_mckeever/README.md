@@ -11,13 +11,15 @@ The purpose of this folder is to contain Anthony McKeever's course work based on
 Each course lesson will contain its own folder.  The folders will use the naming convesion `lessonX` where `X` will be the lesson number.  For example, anything for Lesson 1 will be in the `lesson1` directory.
 
 ### Source Map:
-`-- anthony_mckeever        <Root folder of Anthony's course materials>
-    |-- lesson1             <Content for lesson 1>
-    |   |-- task1           <Content for lesson 1 task 1>
-    |   `-- task2           <Content for lesson 1 task 2>
-    `-- lesson2             <Content for lesson 2>
-        |-- FizzBuzz        <Content for Lesson 2 Exercise 2>
-        |-- grid_printer    <Content for Lesson 2 Exercise 1>
+.....
+    `-- anthony_mckeever        <Root folder of Anthony's course materials>
+        |-- lesson1             <Content for lesson 1>
+        |   |-- task1           <Content for lesson 1 task 1>
+        |   `-- task2           <Content for lesson 1 task 2>
+        `-- lesson2             <Content for lesson 2>
+            |-- exercise_1      <Content for Lesson 2 Exercise 1 - Grid Printer>
+            |-- exercise_2      <Content for Lesson 2 Exercise 2 - FizzBuzz>
+            `-- exercise_3      <Content for Lesson 2 Exercise 2 - Fibonacci Series>
 
 ## Branching
 

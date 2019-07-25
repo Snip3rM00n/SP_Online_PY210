@@ -1,5 +1,5 @@
 """
-Programming In Python - Lesson 2 Exercise 1: Grid Printer
+Programming In Python - Lesson 2 Exercise 3: Fibonacci Series Exercise
 Code Poet: Anthony McKeever
 Start Date: 07/24/2019
 End Date: 07/24/2019
