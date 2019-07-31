@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Programming In Python - Lesson 3 Exercise 1: Slice Lab
+Programming In Python - Lesson 3 Exercise 3: List Lab
 Code Poet: Anthony McKeever
 Start Date: 07/30/2019
 End Date: 07/30/2019

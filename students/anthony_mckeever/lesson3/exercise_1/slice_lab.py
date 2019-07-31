@@ -129,4 +129,3 @@ if __name__ == "__main__":
     assert reorder_sequence(("Pikachu", "Mareep", "Voltorb", "Rotom", "MissingNo.", "Pichu")) == ( "MissingNo.", "Pichu", "Pikachu", "Mareep", "Voltorb", "Rotom")
     assert reorder_sequence(("Mareep", "Flaafy", "Ampharos")) == ("Ampharos", "Mareep", "Flaafy")
     assert reorder_sequence((True, False)) == (True, False)
-    

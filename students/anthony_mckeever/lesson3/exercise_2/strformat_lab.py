@@ -1,5 +1,5 @@
 """
-Programming In Python - Lesson 3 Exercise 1: Slice Lab
+Programming In Python - Lesson 3 Exercise 2: StrFormat Lab
 Code Poet: Anthony McKeever
 Start Date: 07/29/2019
 End Date: 07/30/2019
@@ -152,6 +152,10 @@ def get_lengths(seq):
     return company_len, name_len, edition_len, age_len, cost_len
 
 def run_tests():
+    """
+    Perform assertions against all the methods.
+    Some helpers do not have explicit tests as they are called by functions that are being tested and there for are tested.
+    """
     print("Validate format_sequence")
     assert format_sequence((2, 123.4567, 10000, 12345.67)) == "file_002 :\t123.46, 1.00e+04, 1.23e+04"
     assert format_sequence((-1, 567.8910, 2, 555555.55555)) == "file_-01 :\t567.89, 2.00e+00, 5.56e+05"
@@ -189,6 +193,9 @@ def run_tests():
     print("Tests passed!")
 
 def get_table_test_case():
+    """
+    Return the test case input and expected output for validating create_table
+    """
     input_table = [["Ekiya Glyde Company", "78 Glyde XL 2016", "Personal Edition", 0, 2500599.99],
             ["Ekiya Glyde Company", "86 Glyde XL 3092", "Temporal Edition", -201, 6359950999.99],
             ["NASA", "Saturn V", "", 186 , 6417000.00],
@@ -214,6 +221,9 @@ def get_table_test_case():
     return input_table, output_table
 
 def print_tasks():
+    """
+    Print the output for each task in the exercise.
+    """
     print("\nTask 1:")
     print(format_sequence((2, 123.4567, 10000, 12345.67)))
 
