@@ -1,8 +1,8 @@
 """
 Programming In Python - Lesson 3 Exercise 1: Slice Lab
 Code Poet: Anthony McKeever
-Start Date: 07/28/2019
-End Date: 07/28/2019
+Start Date: 07/29/2019
+End Date: 07/30/2019
 """
 
 def format_sequence(seq):
@@ -105,7 +105,7 @@ def get_grammar(char):
     """
     return "an" if char in ["a", "e", "i", "o", "u"] else "a"
 
-def print_table(seq):
+def create_table(seq):
     """
     Return a string representing a table of Spacecrafts including a header.
     Header: ["Company:", "Name:", "Edition:", "Age:", "Cost:"]
@@ -113,32 +113,43 @@ def print_table(seq):
     :seq:   The sequence to transform into a table.
     """
     table = []
+    company_len, name_len, edition_len, age_len, cost_len = get_lengths(seq)
 
-    company_len = 8
-    name_len = 5
-    edition_len = 8
-    age_len = 4
-    cost_len = 5
+    sep_strings = [("-" * (company_len + 2)), ("-" * (name_len + 2)), ("-" * (edition_len + 2)), ("-" * (age_len + 2)), ("-" * (cost_len + 2))]
+    sep_line = "|" + "+".join(sep_strings) + "|"
 
     for item in seq:
-        company = item[0]
-        name = item[1]
-        edition = item[2]
-        age = item[3] 
-        cost = item[4]
-
-        company_len = len(company) if len(company) > company_len else company_len
-        name_len = len(name) if len(name) > name_len else name_len
-        edition_len = len(edition) if len(edition) > edition_len else edition_len
-        age_len = len(str(age)) if len(str(age)) > age_len else age_len
-        cost_len = len(str(cost)) if len(str(cost)) > cost_len else cost_len
-        
-        table.append(f"{company:<20} | {name:<20} | {edition:<20} | {age:<10}  | {cost:<10.02f} |")
+        cost = f"${item[4]:.02f}"
+        table.append(f"| {item[0]:<{company_len}} | {item[1]:<{name_len}} | {item[2]:<{edition_len}} | {item[3]:>{age_len}} | {cost:>{cost_len}} |")
+        table.append(sep_line)
 
     header = ["Company:", "Name:", "Edition:", "Age:", "Cost:"]
-    table.insert(0, f"| {header[0]:<company_len} | {header[1]:<name_len} | {header[2]:<edition_len} | {header[3]:<age_len}  | {header[4]:<cost_len} |")
+    table.insert(0, sep_line)
+    table.insert(1, f"| {header[0]:<{company_len}} | {header[1]:<{name_len}} | {header[2]:<{edition_len}} | {header[3]:<{age_len}} | {header[4]:<{cost_len}} |")
+    table.insert(2, sep_line)
     return "\n".join(table)
 
+def get_lengths(seq):
+    """
+    Return the longest length (integer) of each item in a sequence of 5 item sequences.
+
+    :seq:   The sequence to get lengths from.
+    """
+    company_len = 0
+    name_len = 0
+    edition_len = 0
+    age_len = 0
+    cost_len = 0
+
+    for item in seq:
+        cost = f"${item[4]:.02f}"
+        company_len = len(item[0]) if len(item[0]) > company_len else company_len
+        name_len = len(item[1]) if len(item[1]) > name_len else name_len
+        edition_len = len(item[2]) if len(item[2]) > edition_len else edition_len
+        age_len = len(str(item[3])) if len(str(item[3])) > age_len else age_len
+        cost_len = len(cost) if len(cost) > cost_len else cost_len
+
+    return company_len, name_len, edition_len, age_len, cost_len
 
 def run_tests():
     print("Validate format_sequence")
@@ -171,11 +182,67 @@ def run_tests():
     assert weigh_fruit2(["anti-lime", -.5, "lime", .5]) == "The weight of an ANTI-LIME is 200% smaller than the weight of a LIME."
     assert weigh_fruit2(["watermelon", 5, "anti-tomato", -1.1]) == "The weight of a WATERMELON is 550% larger than the weight of an ANTI-TOMATO."
     
+    print("Validate create_table")
+    input_table, output_table = get_table_test_case()
+    assert create_table(input_table) == output_table
+
+    print("Tests passed!")
+
+def get_table_test_case():
+    input_table = [["Ekiya Glyde Company", "78 Glyde XL 2016", "Personal Edition", 0, 2500599.99],
+            ["Ekiya Glyde Company", "86 Glyde XL 3092", "Temporal Edition", -201, 6359950999.99],
+            ["NASA", "Saturn V", "", 186 , 6417000.00],
+            ["Ekiya Glyde Company", "32 Glyde Gx 2020", "Andromeda Edition", 2000000, 65000.000],
+            ["SpaceX", "Falcon", "Heavy", 1, 90000000.99],
+            ["Ai-Astra", "SpaceCraft 37", "Astral Explorer", 12993, 3750000.00]]
+
+    output_table = ("|---------------------+------------------+-------------------+---------+----------------|\n"
+                    "| Company:            | Name:            | Edition:          | Age:    | Cost:          |\n"
+                    "|---------------------+------------------+-------------------+---------+----------------|\n"
+                    "| Ekiya Glyde Company | 78 Glyde XL 2016 | Personal Edition  |       0 |    $2500599.99 |\n"
+                    "|---------------------+------------------+-------------------+---------+----------------|\n"
+                    "| Ekiya Glyde Company | 86 Glyde XL 3092 | Temporal Edition  |    -201 | $6359950999.99 |\n"
+                    "|---------------------+------------------+-------------------+---------+----------------|\n"
+                    "| NASA                | Saturn V         |                   |     186 |    $6417000.00 |\n"
+                    "|---------------------+------------------+-------------------+---------+----------------|\n"
+                    "| Ekiya Glyde Company | 32 Glyde Gx 2020 | Andromeda Edition | 2000000 |      $65000.00 |\n"
+                    "|---------------------+------------------+-------------------+---------+----------------|\n"
+                    "| SpaceX              | Falcon           | Heavy             |       1 |   $90000000.99 |\n"
+                    "|---------------------+------------------+-------------------+---------+----------------|\n"
+                    "| Ai-Astra            | SpaceCraft 37    | Astral Explorer   |   12993 |    $3750000.00 |\n"
+                    "|---------------------+------------------+-------------------+---------+----------------|")
+    return input_table, output_table
+
+def print_tasks():
+    print("\nTask 1:")
+    print(format_sequence((2, 123.4567, 10000, 12345.67)))
+
+    print("\nTask 2:")
+    print(format_sequence2((2, 123.4567, 10000, 12345.67)))
+
+    print("\nTask 3:")
+    print(format_numbers((0,)))
+    print(format_numbers((0, 1)))
+    print(format_numbers((0, 1, 2)))
+    print(format_numbers((0, 1, 2, 3)))
+
+    print("\nTask 4:")
+    print(format_five_integers((4, 30, 2017, 2, 27)))
+
+    print("\nTask 5a:")
+    print(weigh_fruit(['orange', 1.3, 'lemon', 1.1]))
+
+    print("\nTask 5b:")
+    print(weigh_fruit2(['lemon', 1.1, 'orange', 1.3]))
+
+    # Ignore "output_table" here since we only need the input table.  The "create_table" function will do the rest.
+    input_table, __ = get_table_test_case()
+    print("\nTask 6:")
+    print(create_table(input_table))
 
 if __name__ == "__main__":
+    print("Running Tests...")
     run_tests()
 
-    seqx = [["Ekiya Glyde Company", "78 Glyde XL 2016", "Personal Edition", 3600, 20000000.00],
-            ["Ekiya Glyde Company", "86 Glyde XL 3092", "Temporal Edition", 3600, 20000000.00],
-            ["NASA", "Saturn V", "", 3600, 20000000.00],
-            ["Ekiya Glyde Company", "92 Glyde Gx 2020", "Explorer Edition", 3600, 20000000.00]]
+    print("\nPrinting Exercises...")
+    print_tasks()
