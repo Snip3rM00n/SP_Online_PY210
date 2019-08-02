@@ -6,11 +6,17 @@ End Date:
 """
 
 donors_list = [("Cresenta Starchelle", 99.99),
-               ("Cresenta Starchelle", 29.99),
                ("Delilah Matsuka", 199.99),
-               ("Delilah Matsuka", 299.99),
                ("Astra Matsume", 599.99),
-               ("Astra Matsume", 799.99)]
+               ("Delilah Matsuka", 299.99),
+               ("Cresenta Starchelle", 6000.00),
+               ("Kima Metoyo", 3600.00),
+               ("Kayomi Matsuka", 0.01),
+               ("Kima Metoyo", 1200.00),
+               ("Delilah Matsuka", 2100.00),
+               ("Cresenta Starchelle", 10345.23),
+               ("Katie Starchelle", 600.00),
+               ("Cresenta Starchelle", 29.99)]
 
 """
 User Stories:
@@ -63,44 +69,66 @@ def handle_main_choice(user_choice):
         print("\nUnknown command.\n"
               "Type \"help\" to get all options.\n")
 
-def print_help():
+def print_help(from_main=True):
     help_cmds = ", ".join(help_opts)
     quit_cmds = ", ".join(quit_opts)
     menu_cmds = ", ".join(menu_opts)
-    print("\nStudio Starchelle Donor Appreciation System\n"
-          "\nA basic system for thanking donors for thier generous contributions.\n"
-          "\nCommand List:\n"
-          f"\t{help_cmds}\t\tPrints this help text.\n"
-          f"\t{menu_cmds}\tReturn to the main menu.\n"
-          f"\t{quit_cmds}\t\tExit the entire script.\n"
-         )
-    input("\n--- Press the Enter/Return Key to return to Main ---\n")
+    list_cmds = ", ".join(list_opts)
+
+    if from_main:
+        print("\nStudio Starchelle Donor Appreciation System\n"
+              "\nA basic system for thanking donors for thier generous contributions.\n"
+              "\nCommand List:\n"
+              f"\t{help_cmds}\t\tPrints this help text.\n"
+              f"\t{menu_cmds}\tReturn to the main menu.\n"
+              f"\t{quit_cmds}\t\tExit the entire script.\n"
+             )
+        input("\n--- Press the Enter/Return Key to return to Main ---\n")
+    else:
+        print( "\nCommand List:\n"
+              f"\t{help_cmds}\t\tPrint this help text.\n"
+              f"\t{list_cmds}\t\tList all of the known donors\n"
+               "\tDonor Name\t\tSelects a donor to thank for their contributions.\n"
+               "\t\t\t\tSelecting an unknown donor will prompt to add them.\n"
+              f"\t{menu_cmds}\tReturn to the main menu.\n"
+              f"\t{quit_cmds}\t\tExit the entire script."
+             )
     
 
 def send_thanks():
-    pass
+    print("\nLets send thanks!")
+    thanking = True
+    while thanking:
+        user_choice = input("\nWho do you want to thank? > ")
+        thanking = thank_handle_choice(user_choice, thanking)
+
+def thank_handle_choice(user_choice, thanking):
+    if user_choice in list_opts:
+        donor_summay = get_donor_summary()
+        print("\nList of Donors:")
+        for donor in donor_summay:
+            print("\t" + donor[0])
+        return True
+    elif user_choice in menu_opts:
+        return False
+    elif user_choice in quit_opts:
+        global stay_on
+        stay_on = False
+        return False
+    elif user_choice in help_opts:
+        print_help(from_main=False)
+        return True
+
 
 def create_report():
-    donor_summary = []
-    skip = []
-    for donor in donors_list:
-        if donor[0] not in skip:
-            skip.append(donor[0])
-            donor_entries = [x for x in donors_list if x[0] == donor[0]]
-            donor_summary.append(process_donor(donor_entries))
-
-    print_table(donor_summary)
-
-def print_table(donor_summary):
+    donor_summary = get_donor_summary()
     header = ["Name:", "Total Given:", "Number of Gifts:", "Average Gift:"]
     lengths = get_lengths(donor_summary, header)
     table = []
 
     sep_strings = [("-" * (lengths[0] + 2)), ("-" * (lengths[1] + 2)), ("-" * (lengths[2] + 2)), ("-" * (lengths[3] + 2))]
     sep_line = "|" + "+".join(sep_strings) + "|"
-    donor_summary2 = sorted(donor_summary, key=lambda x: x[1])
-
-    for item in donor_summary2:
+    for item in sorted(donor_summary, key=sort_key, reverse=True):
         table.append(format_line(item, lengths))
         table.append(sep_line)
 
@@ -112,6 +140,19 @@ def print_table(donor_summary):
     table.insert(4, sep_line)
 
     print("\n".join(table) + "\n")
+
+def get_donor_summary():
+    donor_summary = []
+    skip = []
+    for donor in donors_list:
+        if donor[0] not in skip:
+            skip.append(donor[0])
+            donor_entries = [x for x in donors_list if x[0] == donor[0]]
+            donor_summary.append(process_donor(donor_entries))
+    return donor_summary
+
+def sort_key(item):
+    return item[1]
 
 def format_line(item, lengths, is_donor=True):
     if is_donor:
@@ -152,3 +193,6 @@ def get_lengths(seq, header):
         avg_len = len(avg) if len(avg) > avg_len else avg_len
 
     return [name_len, total_len, count_len, avg_len]
+
+if __name__ == "__main__":
+    main()
