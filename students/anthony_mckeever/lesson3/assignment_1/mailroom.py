@@ -164,6 +164,12 @@ def thank_handle_choice(user_choice):
 
 
 def print_email(name, donation):
+    """
+    Print the thank you email to the console.
+
+    :name:      The name of the donor.
+    :donation:  The donation amount that was recieved from the donor.
+    """
     print("\n\n----- PLEASE SEND THIS EMAIL TO THE DONOR -----\n\n")
     print("Studio Starchelle - A Fizzworks Studios Company\n"
           "123 Starshine Ln.\n"
