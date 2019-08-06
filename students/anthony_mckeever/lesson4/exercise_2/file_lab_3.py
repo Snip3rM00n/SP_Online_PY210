@@ -5,7 +5,7 @@ Start Date: 08/05/2019
 End Date: 08/05/2019
 """
 
-languages = set()
+languages = set([])
 
 f = open("students.txt")
 for line in f.readlines():
@@ -14,10 +14,12 @@ for line in f.readlines():
 
     splitted = line.split(":")
     splitted2 = splitted[-1].split(",")
-
+    
     for l in splitted2:
         stripped = l.strip()
-        if not stripped[:1].isupper:
+
+        #Nick names start with an upper case letter.  Ensure we find a language by finding strings that are lower. 
+        if len(stripped) > 0 and stripped.islower():
             print(stripped)
             languages.add(stripped.strip())
     
