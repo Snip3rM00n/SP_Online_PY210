@@ -11,13 +11,14 @@ f = open("students.txt")
 for line in f.readlines():
     if line == "Name: Nickname, languages\n":
         continue
-        
-    splitted = line.split(":")[-1:]
-    tst = str(splitted).split(",")    
 
-    for l in tst:
-        print(l)
-        if not l[0].isupper:
-            languages.add(l.strip())
+    splitted = line.split(":")
+    splitted2 = splitted[-1].split(",")
+
+    for l in splitted2:
+        stripped = l.strip()
+        if not stripped[:1].isupper:
+            print(stripped)
+            languages.add(stripped.strip())
     
 print(languages)
