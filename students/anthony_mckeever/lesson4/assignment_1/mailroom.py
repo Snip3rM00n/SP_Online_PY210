@@ -1,8 +1,8 @@
 """
-Programming In Python - Lesson 3 Assignment 1: Mailroom Part 1
+Programming In Python - Lesson 4 Assignment 1: Mailroom Part 2
 Code Poet: Anthony McKeever
-Start Date: 07/30/2019
-End Date: 08/01/2019
+Start Date: 08/06/2019
+End Date: 
 """
 import sys
 
@@ -11,57 +11,74 @@ quit_opts = ["exit", "end", "quit"]
 list_opts = ["list", "l", "ls"]
 help_opts = ["help", "h", "?"]
 
-donors_list = [("Cresenta Starchelle", [99.99, 6000.00, 10345.23, 29.99]),
-               ("Delilah Matsuka", [199.99, 299.99, 2100.00]),
-               ("Astra Matsume", [599.99]),
-               ("Kima Metoyo", [3600.00, 1200.00]),
-               ("Kayomi Matsuka", [0.01]),
-               ("Katie Starchelle", [600.00])]
-
-
 def main():
     """
     The main loop of the script.  Prompts user with a main menu.
     """
     print("\nStudio Starchelle Donor Appreciation System\n")
     while True:
-        print_menu()
-        user_choice = input("What do you want to do? > ")
-        handle_main_choice(user_choice.lower())
+        menu_system(main_menu_dict, "Main Menu:", "What do you want to do? > ")
+        #print_options()
+        #user_choice = input("What do you want to do? > ")
+        #handle_main_choice(user_choice.lower())
 
+def menu_system(opts_dict, menu_text, prompt_text, include_main=False, include_donors=False, invalid_opt=None):
+    show_opts = opts_dict.copy()
+    
+    if include_main:
+        show_opts.update(main_dict)
 
-def print_menu():
-    """
-    Print the main menu.
-    """
-    help_cmds = ", ".join(help_opts)
-    quit_cmds = ", ".join(quit_opts)
-    print("--- Main Menu ---\n"
-          "\nAvailable Options:\n"
-          "\t\"Send A Thank You\"\tGet prepopulated email template to thank a donor.\n"
-          "\t\"Create a Report\"\tView a list of all donors and their cumulative donations.\n"
-          f"\t\"{quit_cmds}\"\tQuit the script.  Can be used at any input prompt.\n"
-          f"\t\"{help_cmds}\"\t\tView the script's help text and additional commands.\n"
-         )
+    show_opts.update(help_dict)
+    show_opts.update(quit_dict)
 
+    print(menu_text)
+    print_options(show_opts)
+    
+    # Don't include the list of donors in the help text so the user has to request them.
+    if include_donors:
+        show_opts.update(donors_list)
 
-def handle_main_choice(user_choice):
-    """
-    Handle the user choice from the main menu input promt.
+    while True:
+        user_choice = input(prompt_text)
+        choice_key = key_from_lower(user_choice, show_opts.keys())
 
-    :user_choice:   The str().lower value of the user's input selection.
-    """
-    if user_choice in help_opts:
-        print_help()
-    elif user_choice == "create a report":
-        create_report()
-    elif user_choice == "send a thank you":
-        send_thanks()
-    elif user_choice in quit_opts:
-        sys.exit()
+        if choice_key is not None:
+            selection = show_opts[choice_key]
+            if selection[1]:
+                if selection[1] == print_email:
+                    selection[1](choice_key, selection[0][-1])
+                else:
+                    selection[1]()
+            
+            if selection[1] != print_help and selection[1] != print_donors:
+                break
+
+        else:
+            if invalid_opt is None:
+                print("Invalid choice.  Please select from available options.")
+            else:
+                donor = invalid_opt(choice_key)
+                donor[1](choice_key, donor[0][-1])
+
+def key_from_lower(user_choice, keys):
+    lower_keys = {k.lower() : k for k in keys}
+    return lower_keys[user_choice] if user_choice in lower_keys.keys() else None
+
+def get_opts_string(key, dictionary):
+    count = sum(x == dictionary[key] for x in dictionary.values())
+    if count < 1:
+        return key, None
     else:
-        print("\nUnknown command.\n"
-              "Type \"help\" to get all options.\n")
+        opts = []
+        for k, v in dictionary.items():
+            if v == dictionary[key]:
+                opts.append(k)
+        return ", ".join(opts), opts
+
+def print_donors():
+    print("\nList of Donors:")
+    for donor in donors_list:
+        print("\t" + donor[0])
 
 
 def print_help(from_main=True):
@@ -70,40 +87,44 @@ def print_help(from_main=True):
 
     :from_main: A boolean value that determins whether or not this function was called from handle_main_choice. (Default = True)
     """
-    help_cmds = ", ".join(help_opts)
-    quit_cmds = ", ".join(quit_opts)
-    menu_cmds = ", ".join(menu_opts)
-    list_cmds = ", ".join(list_opts)
+    show_opts = help_dict.copy()
+
+    if from_main:
+        show_opts.update(main_menu_dict)
+    else:
+        show_opts.update(list_dict)
+        show_opts.update(main_dict)
+
+    show_opts.update(quit_dict)
 
     if from_main:
         print("\nStudio Starchelle Donor Appreciation System\n"
-              "\nA basic system for thanking donors for thier generous contributions.\n"
-              "\nCommand List:\n"
-              f"\t{help_cmds}\t\tPrints this help text.\n"
-              f"\t{menu_cmds}\tReturn to the main menu.\n"
-              f"\t{quit_cmds}\t\tExit the entire script.\n"
-             )
-        input("\n--- Press the Enter/Return Key to return to Main ---\n")
-    else:
-        print( "\nCommand List:\n"
-              f"\t{help_cmds}\t\tPrint this help text.\n"
-              f"\t{list_cmds}\t\tList all of the known donors\n"
-               "\tDonor Name\t\tSelects a donor to thank for their contributions.\n"
-               "\t\t\t\tSelecting an unknown donor will prompt to add them.\n"
-              f"\t{menu_cmds}\tReturn to the main menu.\n"
-              f"\t{quit_cmds}\t\tExit the entire script."
-             )
-    
+              "\nA basic system for thanking donors for thier generous contributions.")
+
+    print("\nCommand List:\n")
+    print_options(show_opts)
+
+
+def print_options(show_opts):
+    skip = set([])
+    for key, value in show_opts.items():
+        if key not in skip:
+            opts_string, skippable = get_opts_string(key, show_opts)
+            print("\t" + opts_string + value[0])
+            skip.update(skippable)
+
 
 def send_thanks():
     """
     Function for acepting donations and thanking donors.
-    """
     print("\nLets send thanks!")
     thanking = True
     while thanking:
         user_choice = input("\nWho do you want to thank? > ")
-        thanking = thank_handle_choice(user_choice)
+        choice_key = key_from_lower(user_choice, donors_list.keys())
+    """
+    menu_system(list_dict, "Lets send thanks!", "Who do you want to thank? > ", include_main=True, include_donors=True, invalid_opt=get_donor)
+
 
 
 def thank_handle_choice(user_choice):
@@ -183,11 +204,12 @@ def get_donor(user_choice):
 
     :user_choice:   The user's donor selection.
     """
-    for donor in donors_list:
-        if user_choice.lower() == donor[0].lower():
-            return donor
-    donor = (user_choice,[])
-    donors_list.append(donor)
+    for donor in donors_list.keys():
+        if user_choice.lower() == donor.lower():
+            return donors_list[donor]
+    
+    donor = {user_choice : ([], print_email)}
+    donors_list.update(donor)
     return donor
 
 
@@ -229,10 +251,12 @@ def get_donor_summary():
     Return a summary of all donors including their name, total donation sum, count of donations, and average donation.
     """
     donor_summary = []
-    for donor in donors_list:
-        name = donor[0]
-        total_donations = sum(donor[1])
-        count_donations = len(donor[1])
+    for donor in donors_list.keys():
+        donor_amounts = donors_list[donor][0]
+
+        name = donor
+        total_donations = sum(donor_amounts)
+        count_donations = len(donor_amounts)
         average_donation = total_donations / count_donations
         donor_summary.append([name, total_donations, count_donations, average_donation])
     return donor_summary
@@ -276,6 +300,37 @@ def get_lengths(seq, header):
         avg_len = len(avg) if len(avg) > avg_len else avg_len
 
     return [name_len, total_len, count_len, avg_len]
+
+
+main_menu_dict = { "Send A Thank You" : ("\tGet prepopulated email template to thank a donor.", send_thanks),
+                   "Create a Report" :  ("\t\tView a list of all donors and their cumulative donations.", create_report) }
+
+main_dict = { "main" :   ("\tReturn to the main menu.  Can be used at any input prompt.", None),
+              "return" : ("\tReturn to the main menu.  Can be used at any input prompt.", None),
+              "stop" :   ("\tReturn to the main menu.  Can be used at any input prompt.", None)
+            }
+
+quit_dict = { "exit" : ("\t\tQuit the script.  Can be used at any input prompt.", sys.exit),
+              "end" :  ("\t\tQuit the script.  Can be used at any input prompt.", sys.exit),
+              "quit" : ("\t\tQuit the script.  Can be used at any input prompt.", sys.exit),
+            }
+
+help_dict = { "help" : ("\t\tView the script's help text and additional commands.", print_help),
+              "h" :    ("\t\tView the script's help text and additional commands.", print_help),
+              "?" :    ("\t\tView the script's help text and additional commands.", print_help)
+            }
+
+list_dict = { "list" : ("", print_donors),
+              "l" : ("", print_donors),
+              "ls" : ("", print_donors)
+            }
+
+donors_list = {"Cresenta Starchelle": ([99.99, 6000.00, 10345.23, 29.99], get_donor),
+               "Delilah Matsuka"    : ([199.99, 299.99, 2100.00]        , get_donor),
+               "Astra Matsume"      : ([599.99]                         , get_donor),
+               "Kima Metoyo"        : ([3600.00, 1200.00]               , get_donor),
+               "Kayomi Matsuka"     : ([0.01]                           , get_donor),
+               "Katie Starchelle"   : ([600.00]                         , get_donor)}
 
 
 if __name__ == "__main__":
