@@ -6,18 +6,13 @@ End Date:
 """
 import sys
 
-menu_opts = ["main", "return", "stop"]
-quit_opts = ["exit", "end", "quit"]
-list_opts = ["list", "l", "ls"]
-help_opts = ["help", "h", "?"]
-
 def main():
     """
     The main loop of the script.  Prompts user with a main menu.
     """
     print("\nStudio Starchelle Donor Appreciation System\n")
     while True:
-        menu_system(main_menu_dict, "Main Menu:", "What do you want to do? > ")
+        menu_system(main_menu_dict, "\nMain Menu:", "\nWhat do you want to do? > ")
         #print_options()
         #user_choice = input("What do you want to do? > ")
         #handle_main_choice(user_choice.lower())
@@ -28,7 +23,6 @@ def menu_system(opts_dict, menu_text, prompt_text, include_main=False, include_d
     if include_main:
         show_opts.update(main_dict)
 
-    show_opts.update(help_dict)
     show_opts.update(quit_dict)
 
     print(menu_text)
@@ -45,20 +39,19 @@ def menu_system(opts_dict, menu_text, prompt_text, include_main=False, include_d
         if choice_key is not None:
             selection = show_opts[choice_key]
             if selection[1]:
-                if selection[1] == print_email:
-                    selection[1](choice_key, selection[0][-1])
+                if selection[1] == accept_donation:
+                    selection[1](choice_key)
                 else:
                     selection[1]()
             
-            if selection[1] != print_help and selection[1] != print_donors:
-                break
+            break
 
         else:
             if invalid_opt is None:
                 print("Invalid choice.  Please select from available options.")
             else:
-                donor = invalid_opt(choice_key)
-                donor[1](choice_key, donor[0][-1])
+                invalid_opt(user_choice)
+                break
 
 def key_from_lower(user_choice, keys):
     lower_keys = {k.lower() : k for k in keys}
@@ -77,32 +70,8 @@ def get_opts_string(key, dictionary):
 
 def print_donors():
     print("\nList of Donors:")
-    for donor in donors_list:
-        print("\t" + donor[0])
-
-
-def print_help(from_main=True):
-    """
-    Print the help text for the handle_main_choice or send_thanks functions.
-
-    :from_main: A boolean value that determins whether or not this function was called from handle_main_choice. (Default = True)
-    """
-    show_opts = help_dict.copy()
-
-    if from_main:
-        show_opts.update(main_menu_dict)
-    else:
-        show_opts.update(list_dict)
-        show_opts.update(main_dict)
-
-    show_opts.update(quit_dict)
-
-    if from_main:
-        print("\nStudio Starchelle Donor Appreciation System\n"
-              "\nA basic system for thanking donors for thier generous contributions.")
-
-    print("\nCommand List:\n")
-    print_options(show_opts)
+    for donor in donors_list.keys():
+        print("\t" + donor)
 
 
 def print_options(show_opts):
@@ -123,52 +92,29 @@ def send_thanks():
         user_choice = input("\nWho do you want to thank? > ")
         choice_key = key_from_lower(user_choice, donors_list.keys())
     """
-    menu_system(list_dict, "Lets send thanks!", "Who do you want to thank? > ", include_main=True, include_donors=True, invalid_opt=get_donor)
+    menu_system(list_dict, "\nLets send thanks!", "\nWho do you want to thank? > ", include_main=True, include_donors=True, invalid_opt=accept_donation)
 
+def accept_donation(donor_name):
+    donor = get_donor(donor_name)
 
+    donation_float = 0.0
+    while donation_float <= 0.0:
+        donation = input("How much did they donate? > ")
 
-def thank_handle_choice(user_choice):
-    """
-    Handle the user's choice from the send_thanks input prompt.
-    Parameter, user_choice, should be passed to the function as is to preserve the user's capitolization.
-    This function will handle the str.lower()    
-    :user_choice:   The as-is instance of the user's choice.
-    """
-    if user_choice.lower() in list_opts:
-        print("\nList of Donors:")
-        for donor in donors_list:
-            print("\t" + donor[0])
-        return True
+        if donation in main_dict.keys():
+            return
+        elif donation in quit_dict.keys():
+            quit_dict[donation][1]()
 
-    elif user_choice.lower() in menu_opts:
-        return False
+        donation_float = float(donation)
+        if donation_float <= 0.0:
+            print("Invalid amount.  Try again.")
 
-    elif user_choice.lower() in quit_opts:
-        sys.exit()
-
-    elif user_choice.lower() in help_opts:
-        print_help(from_main=False)
-        return True
-
-    else:
-        donor = get_donor(user_choice)
-        
-        donation_float = 0.0
-        while donation_float <= 0.0:
-            donation = input("How much did they donate? > ")
-
-            if donation in menu_opts:
-                return False
-            elif donation in quit_opts:
-                sys.exit()
-
-            donation_float = float(donation)
-            if donation_float <= 0.0:
-                print("Invalid amount.  Try again.")
-
-        donor[1].append(donation_float)
-        print_email(donor[0], donation_float)
-        return False
+    print(donation_float)
+    donor[0].append(donation_float)
+    print(donor[0])
+    print(donors_list[donor_name])
+    print_email(donor_name, donation_float)
 
 
 def print_email(name, donation):
@@ -208,9 +154,8 @@ def get_donor(user_choice):
         if user_choice.lower() == donor.lower():
             return donors_list[donor]
     
-    donor = {user_choice : ([], print_email)}
-    donors_list.update(donor)
-    return donor
+    donors_list.update({user_choice : ([], accept_donation)})
+    return donors_list[user_choice]
 
 
 def create_report():
@@ -253,10 +198,11 @@ def get_donor_summary():
     donor_summary = []
     for donor in donors_list.keys():
         donor_amounts = donors_list[donor][0]
-
         name = donor
+
         total_donations = sum(donor_amounts)
         count_donations = len(donor_amounts)
+
         average_donation = total_donations / count_donations
         donor_summary.append([name, total_donations, count_donations, average_donation])
     return donor_summary
@@ -315,14 +261,9 @@ quit_dict = { "exit" : ("\t\tQuit the script.  Can be used at any input prompt."
               "quit" : ("\t\tQuit the script.  Can be used at any input prompt.", sys.exit),
             }
 
-help_dict = { "help" : ("\t\tView the script's help text and additional commands.", print_help),
-              "h" :    ("\t\tView the script's help text and additional commands.", print_help),
-              "?" :    ("\t\tView the script's help text and additional commands.", print_help)
-            }
-
-list_dict = { "list" : ("", print_donors),
-              "l" : ("", print_donors),
-              "ls" : ("", print_donors)
+list_dict = { "list" : ("\t\tPrint a list of available donors.", print_donors),
+              "l" :    ("\t\tPrint a list of available donors.", print_donors),
+              "ls" :   ("\t\tPrint a list of available donors.", print_donors)
             }
 
 donors_list = {"Cresenta Starchelle": ([99.99, 6000.00, 10345.23, 29.99], get_donor),
