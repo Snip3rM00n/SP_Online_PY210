@@ -8,6 +8,7 @@ import os
 import sys
 import tempfile
 
+
 def main():
     """
     The main loop of the script.  Prompts user with a main menu.
@@ -176,7 +177,7 @@ def send__to_all():
         email = get_email(k, v[0][-1])
         write_file = open(file_path, "w")
         write_file.write(email)
-        write_file.close
+        write_file.close()
     
     print(f"Donor letters have been written to: {write_dir}")
 

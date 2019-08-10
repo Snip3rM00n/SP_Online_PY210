@@ -18,7 +18,7 @@ for line in f.readlines():
     for l in splitted2:
         stripped = l.strip()
 
-        #Nick names start with an upper case letter.  Ensure we find a language by finding strings that are lower. 
+        # Nick names start with an upper case letter.  Ensure we find a language by finding strings that are lower.
         if len(stripped) > 0 and stripped.islower():
             print(stripped)
             languages.add(stripped.strip())
