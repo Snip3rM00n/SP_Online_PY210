@@ -21,13 +21,18 @@ def main():
 
 
 def safe_input(msg):
+    """
+    Return the input from the user or exit upon KeyboardInterupt or EOFError
+
+    :msg:   The message for the input prompt
+    """
     output = None
     try:
         output = input(msg)
     except (KeyboardInterrupt, EOFError):
         print("Exiting...")
         sys.exit()
-    finally:
+    else:
         return output
 
 
@@ -224,6 +229,7 @@ def get_user_output_path():
                 print("Invalid choice.  Please enter \"Yes\" or \"No\"")
     else:
         return None
+
     return user_dir
 
 
@@ -288,11 +294,16 @@ def create_report():
     """
     donor_summary = get_donor_summary()
     header = ["Name:", "Total Given:", "Number of Gifts:", "Average Gift:"]
-    lengths = get_lengths(donor_summary, header)
+    lengths = [get_length([x[0] for x in donor_summary], header[0]),
+               get_length([x[1] for x in donor_summary], header[1]),
+               get_length([x[2] for x in donor_summary], header[2]),
+               get_length([x[3] for x in donor_summary], header[3])]
+
     table = []
 
     sep_strings = [("-" * (lengths[0] + 2)), ("-" * (lengths[1] + 2)), ("-" * (lengths[2] + 2)), ("-" * (lengths[3] + 2))]
     sep_line = "|" + "+".join(sep_strings) + "|"
+
     for item in sorted(donor_summary, key=sort_key, reverse=True):
         table.append(format_line(item, lengths))
         table.append(sep_line)
@@ -319,17 +330,7 @@ def get_donor_summary():
     """
     Return a summary of all donors including their name, total donation sum, count of donations, and average donation.
     """
-    donor_summary = []
-    for donor in donor_dict.keys():
-        donor_amounts = donor_dict[donor][0]
-        name = donor
-
-        total_donations = sum(donor_amounts)
-        count_donations = len(donor_amounts)
-
-        average_donation = total_donations / count_donations
-        donor_summary.append([name, total_donations, count_donations, average_donation])
-    return donor_summary
+    return [(k, sum(v[0]), len(v[0]),  sum(v[0]) / len(v[0])) for k, v in donor_dict.items()]
 
 
 def format_line(item, lengths, is_donor=True):
@@ -347,29 +348,27 @@ def format_line(item, lengths, is_donor=True):
     return f"| {item[0]:<{lengths[0]}} | {item[1]:>{lengths[1]}} | {item[2]:>{lengths[2]}} | {item[3]:>{lengths[3]}} |"
 
 
-def get_lengths(seq, header):
+def get_length(seq, name):
     """
-    Return a list of the max lengths for all fields of the donor summary.
-    
-    :seq:       A list donor summary entries to get the lengths from.
-    :header:    The header for the table to set the initial lengths to.
+    Return the max length between the longest item in a sequence or the name of the field.
+
+    :seq:   The sequence to evaluate
+    :name:  The name of the field to evaluate
     """
-    name_len = len(header[0])
-    total_len = len(header[1])
-    count_len = len(header[2])
-    avg_len = len(header[3])
-    
-    for item in seq:
-        total = f"${item[1]:.02f}"
-        count = str(item[2])
-        avg = f"${item[3]:.02f}"
+    seq_type = type(seq[0])
+    seq_sort = sorted(seq, key=length_key, reverse=True)
+    longest = len(f"${seq_sort[0]:.02f}") if seq_type is float else len(str(seq_sort[0]))
+    return max(len(name), longest)
 
-        name_len = len(item[0]) if len(item[0]) > name_len else name_len
-        total_len = len(total) if len(total) > total_len else total_len
-        count_len = len(count) if len(count) > count_len else count_len
-        avg_len = len(avg) if len(avg) > avg_len else avg_len
 
-    return [name_len, total_len, count_len, avg_len]
+def length_key(item):
+    """
+    The sort key for the length of items in a sequence
+    """
+    if type(item) is float:
+        return len(f"${item:.02f}")
+
+    return len(str(item))
 
 
 main_menu_dict = {"Send A Thank You":    ("\tGet prepopulated email template to thank a donor.", send_thanks),
