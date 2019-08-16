@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 """
-Programming In Python - Lesson 5 Exercise 1: Mailroom Part 3
+Programming In Python - Lesson 5 Exercise 1: Exceptions Exercise
 Code Poet: Anthony McKeever
 Start Date: 08/13/2019
 End Date: 08/13/2019
