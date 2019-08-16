@@ -119,15 +119,8 @@ def get_opts_string(key, dictionary):
     
     :key:   The key in the dictionary to find duplicate values of.
     """
-    count = sum(x == dictionary[key] for x in dictionary.values())
-    if count < 1:
-        return key, None
-    else:
-        keys = []
-        for k, v in dictionary.items():
-            if v == dictionary[key]:
-                keys.append(k)
-        return ", ".join(keys), keys
+    keys = [k for k, v in dictionary.items() if v == dictionary[key]]
+    return ", ".join(keys), keys
 
 
 def print_donors():
@@ -299,38 +292,43 @@ def create_report():
                get_length([x[2] for x in donor_summary], header[2]),
                get_length([x[3] for x in donor_summary], header[3])]
 
-    table = []
-
     sep_strings = ["-" * (x + 2) for x in lengths]
     sep_line = "|" + "+".join(sep_strings) + "|"
-
-    for item in sorted(donor_summary, key=sort_key, reverse=True):
-        table.append(format_line(item, lengths))
-        table.append(sep_line)
-
-    # Beautify report.
-    report_name = "Donor Report"
-    table.insert(0, "\n|" + "-" * (len(sep_line) - 2) + "|")
-    table.insert(1, f"|{report_name:^{len(sep_line) -2}}|")
-    table.insert(2, sep_line)
-    table.insert(3, format_line(header, lengths, is_donor=False))
-    table.insert(4, sep_line)
+    
+    table = get_report_header(sep_line, header, lengths)
+    table.extend([format_line(d, lengths) + f"\n{sep_line}" for d in sorted(donor_summary, key=sort_key, reverse=True)])
 
     print("\n".join(table) + "\n")
+
+
+def get_report_header(sep_line, header, lengths, report_name="Donor Report"):
+    """
+    Return the header of a deisred report.
+
+    :sep_line:      The seperator line between rows.
+    :header:        The header for the report.
+    :lengths:       The lenght of each field in the report.
+    :report_name:   The name of the report.  (Default = "Donor Report")
+    """
+    return ["\n|" + "-" * (len(sep_line) - 2) + "|",
+             f"|{report_name:^{len(sep_line) - 2}}|",
+             sep_line,
+             format_line(header, lengths, is_donor=False),
+             sep_line]
 
 
 def sort_key(item):
     """
     The key to sort donors by.
     """
-    return item[1]
+    return float(item[1].replace("$", ""))
 
 
 def get_donor_summary():
     """
     Return a summary of all donors including their name, total donation sum, count of donations, and average donation.
     """
-    return [(k, sum(v[0]), len(v[0]),  sum(v[0]) / len(v[0])) for k, v in donor_dict.items()]
+    return [(k, f"${sum(v[0]):.02f}", len(v[0]),  f"${sum(v[0]) / len(v[0]):.02f}") for k, v in donor_dict.items()]
 
 
 def format_line(item, lengths, is_donor=True):
@@ -341,10 +339,6 @@ def format_line(item, lengths, is_donor=True):
     :lengths:   The lengths for each field of the table.
     :is_donor:  A boolean value determining whether or not the :item: is a donor.  (Default = True)
     """
-    if is_donor:
-        total = as_money(item[1])
-        avg = as_money(item[3])
-        return f"| {item[0]:<{lengths[0]}} | {total:>{lengths[1]}} | {item[2]:>{lengths[2]}} | {avg:>{lengths[3]}} |"
     return f"| {item[0]:<{lengths[0]}} | {item[1]:>{lengths[1]}} | {item[2]:>{lengths[2]}} | {item[3]:>{lengths[3]}} |"
 
 
@@ -355,24 +349,15 @@ def get_length(seq, name):
     :seq:   The sequence to evaluate
     :name:  The name of the field to evaluate
     """
-    seq_type = type(seq[0])
-    seq_sort = sorted(seq, key=length_key, reverse=True)
-    longest = len(as_money(seq_sort[0])) if seq_type is float else len(str(seq_sort[0]))
-    return max(len(name), longest)
+    longest = sorted(seq, key=length_key, reverse=True)[0]
+    return max(len(name), len(str(longest)))
 
 
 def length_key(item):
     """
     The sort key for the length of items in a sequence
     """
-    if type(item) is float:
-        return len(as_money(item))
-
     return len(str(item))
-
-
-def as_money(item):
-    return f"${item:.02f}"
 
 
 main_menu_dict = {"Send A Thank You":    ("\tGet prepopulated email template to thank a donor.", send_thanks),
