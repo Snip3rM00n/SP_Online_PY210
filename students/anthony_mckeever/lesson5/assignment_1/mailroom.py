@@ -3,8 +3,8 @@
 """
 Programming In Python - Lesson 5 Assignment 1: Mailroom Part 3
 Code Poet: Anthony McKeever
-Start Date: 08/06/2019
-End Date: 08/07/2019
+Start Date: 08/13/2019
+End Date: 08/15/2019
 """
 import os
 import sys
@@ -301,7 +301,7 @@ def create_report():
 
     table = []
 
-    sep_strings = [("-" * (lengths[0] + 2)), ("-" * (lengths[1] + 2)), ("-" * (lengths[2] + 2)), ("-" * (lengths[3] + 2))]
+    sep_strings = ["-" * (x + 2) for x in lengths]
     sep_line = "|" + "+".join(sep_strings) + "|"
 
     for item in sorted(donor_summary, key=sort_key, reverse=True):
@@ -342,8 +342,8 @@ def format_line(item, lengths, is_donor=True):
     :is_donor:  A boolean value determining whether or not the :item: is a donor.  (Default = True)
     """
     if is_donor:
-        total = f"${item[1]:.02f}"
-        avg = f"${item[3]:.02f}"
+        total = as_money(item[1])
+        avg = as_money(item[3])
         return f"| {item[0]:<{lengths[0]}} | {total:>{lengths[1]}} | {item[2]:>{lengths[2]}} | {avg:>{lengths[3]}} |"
     return f"| {item[0]:<{lengths[0]}} | {item[1]:>{lengths[1]}} | {item[2]:>{lengths[2]}} | {item[3]:>{lengths[3]}} |"
 
@@ -357,7 +357,7 @@ def get_length(seq, name):
     """
     seq_type = type(seq[0])
     seq_sort = sorted(seq, key=length_key, reverse=True)
-    longest = len(f"${seq_sort[0]:.02f}") if seq_type is float else len(str(seq_sort[0]))
+    longest = len(as_money(seq_sort[0])) if seq_type is float else len(str(seq_sort[0]))
     return max(len(name), longest)
 
 
@@ -366,9 +366,13 @@ def length_key(item):
     The sort key for the length of items in a sequence
     """
     if type(item) is float:
-        return len(f"${item:.02f}")
+        return len(as_money(item))
 
     return len(str(item))
+
+
+def as_money(item):
+    return f"${item:.02f}"
 
 
 main_menu_dict = {"Send A Thank You":    ("\tGet prepopulated email template to thank a donor.", send_thanks),
