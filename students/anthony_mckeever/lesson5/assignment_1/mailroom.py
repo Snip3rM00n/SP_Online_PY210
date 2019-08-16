@@ -311,10 +311,10 @@ def get_report_header(sep_line, header, lengths, report_name="Donor Report"):
     :report_name:   The name of the report.  (Default = "Donor Report")
     """
     return ["\n|" + "-" * (len(sep_line) - 2) + "|",
-             f"|{report_name:^{len(sep_line) - 2}}|",
-             sep_line,
-             format_line(header, lengths, is_donor=False),
-             sep_line]
+            f"|{report_name:^{len(sep_line) - 2}}|",
+            sep_line,
+            format_line(header, lengths, is_donor=False),
+            sep_line]
 
 
 def sort_key(item):
