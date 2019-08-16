@@ -1,6 +1,13 @@
 #!/usr/bin/python
 
 """
+Programming In Python - Lesson 5 Exercise 1: Mailroom Part 3
+Code Poet: Anthony McKeever
+Start Date: 08/13/2019
+End Date: 08/13/2019
+
+---
+
 An exercise in playing with Exceptions.
 Make lots of try/except blocks for fun and profit.
 
