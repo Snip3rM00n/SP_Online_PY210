@@ -28,26 +28,68 @@ End Date:
 # This is the framework for the base class
 class Element(object):
 
-    def __init__(self, content=None):
-        self.content = content
-        self.tag = "html"
+    indent = -1
+    
+    def __init__(self, content=None, tag="html"):
+        self.content = []
+
+        if content is not None:
+            self.append(content)
+
+        self.tag = tag
+        self.indent += 1
+        self.element_attributes = None
+
+
+    def __str__(self):
+        output = ""
+        for elm in self.content:
+            output = output + str(elm)
+    
+        attribs = [self.tag]
+        if self.element_attributes is not None:
+            for k, v in self.element_attributes.items():
+                attribs.append("%s=\"%s\"" % (k,v))
+
+        attribs = " ".join(attribs)
+        indentation = "  " * self.indent
+        return f"\n{indentation}<{attribs}>{output}</{self.tag}>"
 
 
     def append(self, new_content):
-        self.content = new_content if self.content is None else self.content + new_content
+        self.content.append(new_content)
 
 
     def render(self, out_file):
-        out_file.write(f"<{self.tag}>{self.content}</{self.tag}>")
+        out_file.write(self.__str__())
+
+
+class Head(Element):
+
+    def __init__(self, content=None):
+        Element.__init__(self, content, "head")
+
+
+class Title(Element):
+
+    def __init__(self, content=None):
+        Element.__init__(self, content, "title")
 
 
 class Html(Element):
 
-    def __init__(self):
-        self.tag = "html"
+    def __init__(self, content=None):
+        Element.__init__(self, content)
 
 
 class Body(Element):
 
-    def __init__(self):
-        self.tag = "body"
+    def __init__(self, content=None):
+        Element.__init__(self, content, "body")
+
+
+class P(Element):
+
+    def __init__(self, content=None, **kwargs):
+        Element.__init__(self, content, "p")
+        self.element_attributes = kwargs
