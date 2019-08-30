@@ -42,18 +42,24 @@ class Element(object):
 
 
     def __str__(self):
+        indentation = "  " * self.indent
+        return f"\n{indentation}<{self.get_attributes()}>\n{self.get_content()}\n</{self.tag}>"
+
+
+    def get_content(self):
         output = ""
         for elm in self.content:
             output = output + str(elm)
-    
+        return output
+
+
+    def get_attributes(self):
         attribs = [self.tag]
         if self.element_attributes is not None:
             for k, v in self.element_attributes.items():
                 attribs.append("%s=\"%s\"" % (k,v))
 
-        attribs = " ".join(attribs)
-        indentation = "  " * self.indent
-        return f"\n{indentation}<{attribs}>{output}</{self.tag}>"
+        return " ".join(attribs)
 
 
     def append(self, new_content):
@@ -76,10 +82,26 @@ class Title(Element):
         Element.__init__(self, content, "title")
 
 
+class Meta(Element):
+
+    def __init__(self, **kwargs):
+        Element.__init__(self, None, "meta")
+        self.element_attributes = kwargs
+
+    
+    def __str__(self):
+        return f"<{self.get_attributes()}/>"
+
+
 class Html(Element):
 
     def __init__(self, content=None):
         Element.__init__(self, content)
+
+    
+    def __str__(self):
+        elm_content = Element.__str__(self)
+        return f"<!DOCTYPE html>{elm_content}"
 
 
 class Body(Element):
@@ -93,3 +115,44 @@ class P(Element):
     def __init__(self, content=None, **kwargs):
         Element.__init__(self, content, "p")
         self.element_attributes = kwargs
+
+
+class Hr(Element):
+
+    def __init__(self):
+        Element.__init__(self, None, "hr")
+
+
+    def __str__(self):
+        return f"\n<{self.tag}/>\n"
+
+
+class A(Element):
+
+    def __init__(self, href, content):
+        Element.__init__(self, content, "a")
+        self.element_attributes = {"href": href}
+
+    
+    def __str__(self):
+        return f"\n<{self.get_attributes()}>{self.get_content()}</{self.tag}>\n"
+
+
+class Ul(Element):
+
+    def __init__(self, **kwargs):
+        Element.__init__(self, None, "ul")
+        self.element_attributes = kwargs
+
+
+class Li(Element):
+
+    def __init__(self, content=None, **kwargs):
+        Element.__init__(self, content, "li")
+        self.element_attributes = kwargs
+
+
+class H(Element):
+    
+    def __init__(self, header_level, content):
+        Element.__init__(self, content, f"h{header_level}")
