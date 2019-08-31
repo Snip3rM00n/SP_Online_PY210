@@ -2,7 +2,7 @@
 Programming In Python - Lesson 7 Assignment 1: HTML Renderer
 Code Poet: Anthony McKeever
 Start Date: 08/27/2019
-End Date: 
+End Date: 08/31/2019
 """
 
 import io
@@ -46,6 +46,11 @@ def test_init():
 
     e = Element("this is some text")
 
+    content = render_result(e)
+    assert f"{e.indent}this is some text" in content
+    assert content.startswith("<html>")
+    assert content.endswith("</html>\n")
+
 
 def test_append():
     """
@@ -56,6 +61,14 @@ def test_append():
     """
     e = Element("this is some text")
     e.append("some more text")
+    indent = e.indent
+
+    content = render_result(e)
+    assert f"{indent}this is some text" in content
+    assert "some more text" in content
+    assert f"{indent}this is some text\n{indent}some more text" in content
+    assert content.startswith("<html>")
+    assert content.endswith("</html>\n")
 
 
 def test_render_element():
@@ -188,7 +201,7 @@ def test_header_elements():
 
     content = render_result(header)
     assert "<title>Studio Starchelle</title>" in content
-    assert content.startswith("<head>") and content.endswith("</head>")
+    assert content.startswith("<head>") and content.endswith("</head>\n")
 
 
 def test_header_as_child():
@@ -207,6 +220,55 @@ def test_header_as_child():
     assert body in page.content
     assert title in page.content[0].content
     assert title not in page.content[1].content
+
+
+def test_anchor():
+    url = "https://ahc.gov/depts/doti"
+    link_test = "AHC Department of Temporal Integrity"
+    anchor = A(url, link_test)
+    contents = render_result(anchor)
+
+    assert contents.startswith(f"<a href=\"{url}\">")
+    assert contents.endswith("</a>\n")
+    assert contents.count(f">{link_test}<") == 1
+
+
+def test_h():
+    heading_text = "Sophie Loaphie Bakery"
+    h_list = []
+    for i in range(1, 5):
+        h_list.append(H(i, heading_text, id=f"heading_{i}"))
+
+    for i in range(len(h_list)):
+        contents = render_result(h_list[i])
+        assert contents.startswith(f"<h{i + 1} id=\"heading_{i + 1}\">")
+        assert contents.endswith(f"</h{i + 1}>\n")
+        assert heading_text in contents
+
+
+def test_hr():
+    hr = Hr()
+
+    try:
+        hr.append("Cresenta Starchelle")
+    except TypeError as te:
+        assert "Hr nodes cannot have innerHTML content." in str(te)
+
+    contents = render_result(hr)
+    assert contents == "<hr />\n"
+
+
+def test_br():
+    br = Br()
+
+    try:
+        br.append("Cresenta Starchelle")
+    except TypeError as te:
+        assert "Br nodes cannot have innerHTML content." in str(te)
+
+    contents = render_result(br)
+    assert contents == "<br />\n"
+    
 
 # #####################
 # # indentation testing
@@ -267,7 +329,7 @@ def test_element_indent1():
 
     <html>
         this is some text
-    <\html>
+    <\\html>
 
     More complex indentation should be tested later.
     """
@@ -288,3 +350,55 @@ def test_element_indent1():
     assert lines[1].startswith(Element.indent + "thi")
     assert lines[2] == "</html>"
     assert file_contents.endswith("</html>")
+
+
+def test_document_indent():
+    page = Html()
+    indent = page.indent
+
+    title = Title("Sophie Loaphie Bakery")
+    head = Head(title)
+    page.append(head)
+
+    h = H(1, "Sophie Loaphie Bakery")
+    p = P("The Sophiest Bakery with the Loaphiest bread!")
+    li = Li(A("https://github.com/snip3rm00n", "Our GitHub"))
+    ul = Ul(li, id="our_links")
+    ul.append(li)
+    body = Body(h)
+    body.append(p)
+    body.append(ul)
+    page.append(body)
+    
+    doc_type = render_result(DocType()).rstrip()
+    file_contents = render_result(page).rstrip()
+    total_indent = 0
+    file_contents = file_contents.split("\n")
+    last_close = False
+
+    for line in file_contents:
+        print(line)
+        if "!DOC" in line:
+            assert line == doc_type
+            continue
+
+        if "<html" in line:
+            assert line == "<html>"
+            continue
+        
+        single_line = any(elm in line for elm in ["<title", "<h1", "<a"])
+
+        if last_close and not "</" in line:
+            last_close = False
+        elif single_line:
+            total_indent = total_indent + 1
+            last_close = True
+        elif "</" in line:
+            total_indent = total_indent - 1
+            last_close = True
+        else:
+            total_indent = total_indent + 1
+
+        print(single_line, total_indent)
+
+        assert indent * total_indent in line

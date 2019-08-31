@@ -4,7 +4,7 @@
 Programming In Python - Lesson 7 Assignment 1: HTML Renderer
 Code Poet: Anthony McKeever
 Start Date: 08/27/2019
-End Date: 
+End Date: 08/31/2019
 """
 
 from io import StringIO
@@ -231,3 +231,19 @@ body.append(list)
 page.append(body)
 
 render_page(page, "test_html_output8.html")
+
+
+page = hr.Html()
+title = hr.Title("Sophie Loaphie Bakery")
+head = hr.Head(title)
+page.append(head)
+
+h = hr.H(1, "Sophie Loaphie Bakery")
+p = hr.P("The Sophiest Bakery with the Loaphiest bread!")
+li = hr.Li(hr.A("https://github.com/snip3rm00n", "Our GitHub"))
+ul = hr.Ul(li, id="our_links")
+body = hr.Body(h)
+body.append(p)
+body.append(ul)
+page.append(body)
+render_page(page, "loaphie.html")
