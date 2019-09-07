@@ -15,6 +15,13 @@ def test_sphere_init():
     assert s.diameter == 4
 
 
+def test_sphere_diameter_init():
+    s = Sphere.from_diameter(6)
+
+    assert s.diameter == 6
+    assert s.radius == 3
+
+
 def test_volume():
     s = Sphere(2)
     assert round(s.volume, 2) == 33.51

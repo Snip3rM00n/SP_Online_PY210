@@ -9,7 +9,31 @@ import math
 
 from circle import Circle
 
+
 class Sphere(Circle):
+    """
+    An object representing a Sphere.
+    """
+
+    def __init__(self, radius):
+        """
+        Initializes a Sphere object
+
+        :self:      The class
+        :radius:    The desired radius of the Sphere.
+        """
+        super().__init__(radius)
+
+
+    @classmethod
+    def from_diameter(self, diameter):
+        """
+        Instantiates a Sphere from a diameter value.
+
+        :self:      The class
+        :diameter:  The desired diameter of the Sphere.
+        """
+        return super().from_diameter(diameter)
 
     @property
     def volume(self):

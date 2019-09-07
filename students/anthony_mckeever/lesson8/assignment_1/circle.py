@@ -6,7 +6,6 @@ End Date: 09/05/2019
 """
 
 import math
-import operator
 
 
 class Circle():
@@ -14,26 +13,47 @@ class Circle():
     An object representing a circle.
     """
     def __init__(self, radius):
+        """
+        Initializes a Circle object
+
+        :self:      The class
+        :radius:    The desired radius of the circle.
+        """
         self.radius = radius
 
     
     @property
     def diameter(self):
+        """
+        Return the diameter of the circle.
+        """
         return self.radius * 2
 
 
     @diameter.setter
     def diameter(self, value):
+        """
+        Set the diameter of the circle
+
+        :self:  The Class
+        :value: The new diameter value.
+        """
         self.radius = value / 2
 
     
     @property
     def area(self):
+        """
+        Return the area of the circle.
+        """
         return math.pi * (self.radius ** 2)
 
 
     @classmethod
     def from_diameter(cls, diameter):
+        """
+        Instantiates a circle from a diameter value.
+        """
         self = cls(diameter / 2)
         return self
 
