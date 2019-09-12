@@ -33,7 +33,9 @@ class Donor():
     @classmethod
     def from_string(cls, input):
         input = input.split(',')
-        self = cls(input[0], input[1:])
+        name = input[0]
+        donations = [float(d) for d in input[1:]]
+        self = cls(name, donations)
         return self
 
     
@@ -69,9 +71,11 @@ class Donor_Collection():
 
         donors = []
         with open(file_path, "r") as in_file:
-            content = in_file.readlines(10)
+            content = in_file.readline()
             while len(content) > 0:
-                donors.extend([Donor.from_string(d) for d in content])
+                print(content)
+                donors.append(Donor.from_string(content))
+                content = in_file.readline()
         
         self = cls(donors)
         return self
@@ -86,7 +90,8 @@ class Donor_Collection():
 
     def write_donors(self, file_path):
         with open(file_path, "w") as out_file:
-            out_file.writelines([str(d) for d in self.donors])
+            content = "\n".join([str(d) for d in self.donors])
+            out_file.writelines(content)
 
 
     def save_to_file(self, file_path):
