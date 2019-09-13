@@ -19,8 +19,8 @@ from donor_models import Donor_Collection
 
 
 parser = argparse.ArgumentParser(description="Studio Starchelle's Donor Appreciation System")
-parser.add_argument("--donor-list", type=str, default="./donor_list.csv")
-parser.add_argument("--email-template", type=str, default="./email_template.txt")
+parser.add_argument("--donor-list", type=str, default="./resource/donor_list.csv")
+parser.add_argument("--email-template", type=str, default="./resource/email_template.txt")
 
 
 donor_list = None
