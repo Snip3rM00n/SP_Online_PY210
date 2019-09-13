@@ -6,13 +6,15 @@ End Date:
 """
 
 import os.path
+from importlib import reload
 
 from support import Helpers
+from support import File_Helpers
 
 class Donor():
 
     def __init__(self, name, donations):
-        self.donor_name = name
+        self.name = name
         self.donations = [d for d in donations]
 
     
@@ -41,15 +43,20 @@ class Donor():
     
     @property
     def to_summary(self):
-        return (self.donor_name, f"{self.total_donations:.02f}", len(self), f"{self.average_donation:.02f}")
+        return (self.name, f"{self.total_donations:.02f}", len(self), f"{self.average_donation:.02f}")
+
+
+    def get_email(self, template):
+        return template.format(self.name, self.donations[-1])
 
 
     def __len__(self):
         return len(self.donations)
 
+
     def __str__(self):
         donations = ",".join([f"{d:.02f}" for d in self.donations])
-        return f"{self.donor_name},{donations}"
+        return f"{self.name},{donations}"
 
 
     def __lt__(self, other):
@@ -57,41 +64,71 @@ class Donor():
         tuple_other = (other.total_donations, other.average_donation)
         return tuple_self < tuple_other
 
+    
+    def __eq__(self, other):
+        return self.to_summary == other.to_summary
+
 
 class Donor_Collection():
 
-    def __init__(self, list_donors):
+    def __init__(self, list_donors, email_template):
         self.donors = list_donors
+        self.email_template = File_Helpers.open_file(email_template, type(str()))
 
 
     @classmethod
-    def from_file(cls, file_path):
+    def from_file(cls, file_path, email_template):
         if not os.path.isfile(file_path):
             raise FileNotFoundError(f"No file exists at path: {file_path}")
 
-        donors = []
-        with open(file_path, "r") as in_file:
-            content = in_file.readline()
-            while len(content) > 0:
-                print(content)
-                donors.append(Donor.from_string(content))
-                content = in_file.readline()
-        
-        self = cls(donors)
+        donors = [Donor.from_string(c) for c in File_Helpers.open_file(file_path, type(Donor))]
+
+        self = cls(donors, email_template)
         return self
+
+
+    def handle_donation(self, name):
+        donation = 0.0
+        while donation <= 0.0:
+            amount = Helpers.safe_input("How much did they donate?")
+            
+            if amount.lower() == "cancel":
+                return
+            
+            try:
+                donation = float(amount)
+            except ValueError:
+                donation = 0.0
+            finally:
+                if donation <= 0.0:
+                    print("Invalid amount.  Try again.")
+
+        donor = self[name]
+
+        if donor is not None:
+            donor.accept_donation(donation)
+        else:
+            donor = Donor(name, [donation])
+            self.donors.append(donor)
+
+        print("\n\n----- PLEASE SEND THIS EMAIL TO THE DONOR -----\n\n")
+        print(donor.get_email(self.email_template))
+        print("\n\n----- PLEASE SEND THIS EMAIL TO THE DONOR -----\n\n")
 
     
     @property
     def donor_summary(self):
-        #header = ["Name:", "Total Given:", "Number of Gifts:", "Average Gift:"]
-        #lengths = Helpers.get_legnths(summaries, header)
-        return [d.to_summary() for d in self.donors]
+        return [d.to_summary for d in self.donors]
+
+
+    def print_donors(self):
+        donors = "\n\t".join([d.name for d in self.donors])
+        print(f"\t{donors}")
 
 
     def write_donors(self, file_path):
-        with open(file_path, "w") as out_file:
-            content = "\n".join([str(d) for d in self.donors])
-            out_file.writelines(content)
+        content = "\n".join([str(d) for d in self.donors])
+        File_Helpers.write_file(file_path, content)
 
 
     def save_to_file(self, file_path):
@@ -109,3 +146,10 @@ class Donor_Collection():
             msg = str(f"Could not write file to: {file_path}\n"
                       f"The donor list has been backed up to: {new_file_path}")
             raise IOError(msg) from e
+    
+
+    def __getitem__(self, index):
+        if isinstance(index, str):
+            return next((d for d in self.donors if d.name == index), None)
+        else:
+            return  self.donors[index]
