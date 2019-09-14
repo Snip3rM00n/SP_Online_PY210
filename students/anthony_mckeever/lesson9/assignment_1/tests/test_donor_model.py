@@ -5,7 +5,7 @@ Start Date: 09/10/2019
 End Date: 
 """
 
-from donor_models import Donor
+from ..donor_models import Donor
 #from donor_models import Donor
 
 def test_donor_init():

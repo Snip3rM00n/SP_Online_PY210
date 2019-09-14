@@ -8,14 +8,14 @@ End Date:
 import argparse
 import os.path
 
-from support import Helpers
-from support import File_Helpers
+from .support import Helpers
+from .support import File_Helpers
 
-from support import MenuItem
-from support import MenuDriven
+from .support import MenuItem
+from .support import MenuDriven
 
-from donor_models import Donor
-from donor_models import Donor_Collection
+from .donor_models import Donor
+from .donor_models import Donor_Collection
 
 
 parser = argparse.ArgumentParser(description="Studio Starchelle's Donor Appreciation System")
