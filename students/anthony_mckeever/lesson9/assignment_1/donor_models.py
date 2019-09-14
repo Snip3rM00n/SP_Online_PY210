@@ -139,7 +139,7 @@ class Donor_Collection():
             self.write_donors(file_path)
             print(f"Donor list backed up to: {file_path} successfully.")
         except Exception as e:
-            new_file_path = os.path.join(os.path.curdir(), "donor_list.csv")
+            new_file_path = os.path.join(os.path.curdir, "donor_list.csv")
             self.write_donors(file_path)
 
             msg = str(f"Could not write file to: {file_path}\n"
@@ -152,3 +152,7 @@ class Donor_Collection():
             return next((d for d in self.donors if d.name == index), None)
         else:
             return  self.donors[index]
+
+
+    def __len__(self):
+        return len(self.donors)

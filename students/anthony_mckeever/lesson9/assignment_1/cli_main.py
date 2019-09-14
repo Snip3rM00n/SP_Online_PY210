@@ -26,8 +26,17 @@ parser.add_argument("--email-template", type=str, default="./resource/email_temp
 donor_list = None
 
 
-def main():
+def main(args):
     print("\nStudio Starchelle Donor Appreciation System")
+
+    main_menu = [
+        MenuItem("Send a Thank You", "Get email template to thank a donor.", send_thanks),
+        MenuItem("Create a Report", "View all donors and their cumulative donations",
+                 create_report),
+        MenuItem("Send Letters to All", "Generate a letter for every donor.", send_to_all)
+    ]
+    main_menu = MenuDriven("Main Menu:", main_menu, "What do you want to do?")
+
 
     try:
         while True:
@@ -38,8 +47,10 @@ def main():
 
 
 def send_thanks():
-    thanks = [MenuItem("List Donors", "Print a list of available donors.", donor_list.print_donors, tabs=3)]
-    thanks = MenuDriven("Lets Send Thanks!", thanks, "Who would you like to thank?", show_main=True, invalid=donor_list.handle_donation)
+    thanks = [MenuItem("List Donors", "Print a list of available donors.",
+              donor_list.print_donors, tabs=3)]
+    thanks = MenuDriven("Lets Send Thanks!", thanks, "Who would you like to thank?",
+                        show_main=True, invalid=donor_list.handle_donation)
     thanks.run_menu()
 
 
@@ -54,8 +65,10 @@ def create_report():
 
 def send_to_all():
     print("\n\nLets thank everybody!")
-    print("\nThis will prepare a letter to send to everyone has donated to Studio Starchelle in the past.")
-    print("All letters will be saved as text (.txt) files in the default directory a different directory is specified.")
+    print(str("\nThis will prepare a letter to send to everyone has donated to "
+              "Studio Starchelle in the past."))
+    print(str("All letters will be saved as text (.txt) files in the default directory a "
+              "different directory is specified."))
 
     save_dir = File_Helpers.get_user_output_path()
 
@@ -70,16 +83,8 @@ def send_to_all():
     print(f"Donor letters successfully saved to: {save_dir}")
 
 
-main_menu = [
-    MenuItem("Send a Thank You", "Get email template to thank a donor.", send_thanks),
-    MenuItem("Create a Report", "View all donors and their cumulative donations", create_report),
-    MenuItem("Send Letters to All", "Generate a letter for every donor.", send_to_all)
-]
-main_menu = MenuDriven("Main Menu:", main_menu, "What do you want to do?")
-
-
 if __name__ == "__main__":
     args = parser.parse_args()
     donor_list = Donor_Collection.from_file(args.donor_list, args.email_template)
 
-    main()
+    main(args)
