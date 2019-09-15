@@ -8,7 +8,7 @@ End Date:
 import io
 import sys
 import tempfile
-import unittest
+
 from unittest import TestCase
 from unittest import mock
 from unittest.mock import patch

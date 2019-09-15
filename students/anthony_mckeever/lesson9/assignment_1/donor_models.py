@@ -42,7 +42,8 @@ class Donor():
     
     @property
     def to_summary(self):
-        return (self.name, f"{self.total_donations:.02f}", len(self), f"{self.average_donation:.02f}")
+        return (self.name, f"{self.total_donations:.02f}",
+                len(self), f"{self.average_donation:.02f}")
 
 
     def get_email(self, template):

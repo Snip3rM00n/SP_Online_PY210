@@ -7,8 +7,7 @@ End Date:
 
 import io
 import sys
-import unittest
-from unittest import TestCase
+
 from unittest import mock
 from unittest.mock import patch
 
@@ -18,11 +17,10 @@ from ..donor_models import Donor_Collection
 class TestHelpers():
 
     donor_list = ["Sophia McLoaphia,50.00,100.00",
-                "Cresenta Starchelle,50.00,100.00",
-                "Anthony Crowley,10.20,30.40",
-                "Aziraphale,50000.00,10000.00",
-                "Anathema Device,60.00,70.00"
-                ]
+                  "Cresenta Starchelle,50.00,100.00",
+                  "Anthony Crowley,10.20,30.40",
+                  "Aziraphale,50000.00,10000.00",
+                  "Anathema Device,60.00,70.00"]
 
 
     @staticmethod

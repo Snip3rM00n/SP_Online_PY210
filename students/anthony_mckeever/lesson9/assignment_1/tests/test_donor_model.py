@@ -6,11 +6,10 @@ End Date:
 """
 
 import sys
-import unittest
+
 from unittest import TestCase
 from unittest import mock
 from unittest.mock import patch
-
 
 from .shared_methods import TestHelpers
 from ..donor_models import Donor
@@ -96,7 +95,8 @@ class DonorCollectionTests(TestCase):
         with patch("os.path.isfile") as is_file:
             with patch("builtins.open", new=TestHelpers.multi_open_mock, create=True):
                 is_file.return_value = True
-                donors = Donor_Collection.from_file("probably_not_a_file.txt", "totes_a_real_file.txt")
+                donors = Donor_Collection.from_file("probably_not_a_file.txt",
+                                                    "totes_a_real_file.txt")
                 assert len(donors) == 5
                 assert donors.email_template == "{} -- {}"
 
@@ -249,4 +249,3 @@ class DonorCollectionTests(TestCase):
                     assert interceptor.getvalue().count(expected) == 1
 
         sys.stdout = hold_stdout
-        

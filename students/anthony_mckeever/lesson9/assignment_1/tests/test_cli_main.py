@@ -8,7 +8,6 @@ End Date:
 import os.path
 import sys
 import tempfile
-import unittest
 
 from unittest import TestCase
 from unittest import mock
