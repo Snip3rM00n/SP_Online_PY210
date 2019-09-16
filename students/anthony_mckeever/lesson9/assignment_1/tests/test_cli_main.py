@@ -69,10 +69,7 @@ class TestMain(TestCase):
             handle_input.side_effect = ["1", "2"]
             cli_main.send_thanks()
 
-            donor_names = "\n\t".join([d.name for d in donors.donors])
-            donor_names = f"\t{donor_names}"
-
-            assert interceptor.getvalue().count(donor_names) == 1
+            assert interceptor.getvalue().count(donors.get_names) == 1
 
         sys.stdout = hold_stdout
 

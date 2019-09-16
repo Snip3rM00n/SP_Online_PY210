@@ -32,10 +32,10 @@ class Donor():
 
 
     @classmethod
-    def from_string(cls, input):
-        input = input.split(',')
-        name = input[0]
-        donations = [float(d) for d in input[1:]]
+    def from_string(cls, in_value):
+        in_value = in_value.split(',')
+        name = in_value[0]
+        donations = [float(d) for d in in_value[1:]]
         self = cls(name, donations)
         return self
 
@@ -95,13 +95,7 @@ class Donor_Collection():
             if amount.lower() == "cancel":
                 return
             
-            try:
-                donation = float(amount)
-            except ValueError:
-                donation = 0.0
-            finally:
-                if donation <= 0.0:
-                    print("Invalid amount.  Try again.")
+            donation = Helpers.validate_donation(amount)
 
         donor = self[name]
 
@@ -111,24 +105,22 @@ class Donor_Collection():
             donor = Donor(name, [donation])
             self.donors.append(donor)
 
-        print("\n\n----- PLEASE SEND THIS EMAIL TO THE DONOR -----\n\n")
-        print(donor.get_email(self.email_template))
-        print("\n\n----- PLEASE SEND THIS EMAIL TO THE DONOR -----\n\n")
-
+        Helpers.print_email(donor.get_email(self.email_template))
     
     @property
     def donor_summary(self):
         return [d.to_summary for d in self.donors]
 
 
-    def print_donors(self):
+    @property
+    def get_names(self):
         donors = "\n\t".join([d.name for d in self.donors])
-        print(f"\t{donors}")
+        return f"\t{donors}"
 
 
-    def write_donors(self, file_path):
+    def write_donors(self, file_path, msg=None):
         content = "\n".join([str(d) for d in self.donors])
-        File_Helpers.write_file(file_path, content)
+        File_Helpers.write_file(file_path, content, msg)
 
 
     def save_to_file(self, file_path):
@@ -137,14 +129,15 @@ class Donor_Collection():
             raise NotADirectoryError(f"No directory exists at: {dir_name}")
 
         try:
-            self.write_donors(file_path)
-            print(f"Donor list backed up to: {file_path} successfully.")
+            msg = f"Donor list backed up to: {file_path} successfully."
+            self.write_donors(file_path, msg)
         except Exception as e:
             new_file_path = os.path.join(os.path.curdir, "donor_list.csv")
-            self.write_donors(file_path)
 
             msg = str(f"Could not write file to: {file_path}\n"
                       f"The donor list has been backed up to: {new_file_path}")
+
+            self.write_donors(file_path, msg)
             raise IOError(msg) from e
     
 

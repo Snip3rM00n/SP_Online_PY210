@@ -48,7 +48,7 @@ def main(args):
 
 def send_thanks():
     thanks = [MenuItem("List Donors", "Print a list of available donors.",
-              donor_list.print_donors, tabs=3)]
+              print(donor_list.get_names), tabs=3)]
     thanks = MenuDriven("Lets Send Thanks!", thanks,
                         "Who would you like to thank? (Enter '1' to list donors)",
                         show_main=True, invalid=donor_list.handle_donation)

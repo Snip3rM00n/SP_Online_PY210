@@ -179,14 +179,9 @@ class DonorCollectionTests(TestCase):
     
     def test_print_donors(self):
         donors = TestHelpers.get_donor_collection()
-        interceptor, hold_stdout = TestHelpers.intercept_stdout()
-
         donor_names = "\n\t".join([d.name for d in donors.donors])
         donor_names = f"\t{donor_names}"
-        donors.print_donors()
-
-        assert interceptor.getvalue().count(donor_names) == 1
-        sys.stdout = hold_stdout
+        assert donors.get_names == donor_names
 
 
     def test_save_to_file_golden_path(self):

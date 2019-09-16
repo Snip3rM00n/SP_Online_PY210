@@ -78,6 +78,25 @@ class Helpers():
             return output
 
 
+    @staticmethod
+    def validate_donation(amount):
+        try:
+            donation = float(amount)
+        except ValueError:
+            donation = 0.0
+        finally:
+            if donation <= 0.0:
+                print("Invalid amount.  Try again.")
+            return donation
+
+        
+    @staticmethod
+    def print_email(email):
+        print("\n\n----- PLEASE SEND THIS EMAIL TO THE DONOR -----\n\n")
+        print(email)
+        print("\n\n----- PLEASE SEND THIS EMAIL TO THE DONOR -----\n\n")
+
+
 class File_Helpers():
 
     @staticmethod
@@ -90,12 +109,15 @@ class File_Helpers():
 
 
     @staticmethod
-    def write_file(file_path, content):
+    def write_file(file_path, content, finish_msg=None):
         with open(file_path, "w") as out_file:
             if isinstance(content, list):
                 out_file.writelines(content)
             else:
                 out_file.write(content)
+        
+        if finish_msg is not None:
+            print(finish_msg)
 
 
     @staticmethod
