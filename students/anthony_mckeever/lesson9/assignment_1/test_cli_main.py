@@ -13,9 +13,9 @@ from unittest import TestCase
 from unittest import mock
 from unittest.mock import patch
 
-from .. import cli_main
-from .shared_methods import TestHelpers
-from ..support import Helpers
+import cli_main
+from test_donor_model import TestHelpers
+from support import Helpers
 
 
 class mock_args():

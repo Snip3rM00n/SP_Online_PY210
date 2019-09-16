@@ -13,10 +13,10 @@ from unittest import TestCase
 from unittest import mock
 from unittest.mock import patch
 
-from ..support import Helpers
-from ..support import File_Helpers
-from ..support import MenuItem
-from ..support import MenuDriven
+from support import Helpers
+from support import File_Helpers
+from support import MenuItem
+from support import MenuDriven
 
 
 class TestSupport(TestCase):

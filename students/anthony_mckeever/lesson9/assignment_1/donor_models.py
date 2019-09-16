@@ -7,8 +7,8 @@ End Date:
 
 import os.path
 
-from .support import Helpers
-from .support import File_Helpers
+from support import Helpers
+from support import File_Helpers
 
 class Donor():
 
@@ -47,7 +47,8 @@ class Donor():
 
 
     def get_email(self, template):
-        return template.format(self.name, self.donations[-1])
+        donation = f"{self.donations[-1]:.02f}"
+        return template.format(self.name, donation)
 
 
     def __len__(self):

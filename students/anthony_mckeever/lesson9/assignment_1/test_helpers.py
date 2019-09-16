@@ -11,8 +11,8 @@ import sys
 from unittest import mock
 from unittest.mock import patch
 
-from ..donor_models import Donor
-from ..donor_models import Donor_Collection
+from donor_models import Donor
+from donor_models import Donor_Collection
 
 class TestHelpers():
 

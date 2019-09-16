@@ -8,14 +8,14 @@ End Date:
 import argparse
 import os.path
 
-from .support import Helpers
-from .support import File_Helpers
+from support import Helpers
+from support import File_Helpers
 
-from .support import MenuItem
-from .support import MenuDriven
+from support import MenuItem
+from support import MenuDriven
 
-from .donor_models import Donor
-from .donor_models import Donor_Collection
+from donor_models import Donor
+from donor_models import Donor_Collection
 
 
 parser = argparse.ArgumentParser(description="Studio Starchelle's Donor Appreciation System")
@@ -48,11 +48,15 @@ def main(args):
 
 def send_thanks():
     thanks = [MenuItem("List Donors", "Print a list of available donors.",
-              print(donor_list.get_names), tabs=3)]
+              print_donors, tabs=3)]
     thanks = MenuDriven("Lets Send Thanks!", thanks,
                         "Who would you like to thank? (Enter '1' to list donors)",
                         show_main=True, invalid=donor_list.handle_donation)
     thanks.run_menu()
+
+
+def print_donors():
+    print(donor_list.get_names)
 
 
 def create_report():
