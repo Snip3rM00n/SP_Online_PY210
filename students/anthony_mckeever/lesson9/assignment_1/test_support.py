@@ -7,6 +7,7 @@ End Date: 09/15/2019
 
 import io
 import sys
+import os.path
 import tempfile
 
 from unittest import TestCase
@@ -20,6 +21,13 @@ from support import MenuDriven
 
 
 class TestSupport(TestCase):
+
+    def test_resource_file_pathing(self):
+        file_path = os.path.dirname(os.path.realpath(__file__)) 
+        file_path = os.path.join(file_path, "resource", "test.txt") 
+
+        assert FileHelpers.default_resource_file_path("test.txt") == file_path
+
 
     def test_safe_input(self):
         with patch('builtins.input') as handle_input:
