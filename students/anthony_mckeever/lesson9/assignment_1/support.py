@@ -206,16 +206,20 @@ class FileHelpers():
                     choice = Helpers.safe_input(str(f"The directory \"{user_dir}\" does not"
                                                      " exist.  Do you want to create it?"
                                                      " ([Y]es / [N]o)"))
+                                                     
                     if choice.lower() in ["yes", "y"]:
                         os.makedirs(user_dir)
                         break
+
                     elif choice.lower() in ["no", "n"]:
                         print("Using default directory instead.")
                         user_dir = default_dir
                         break
                     print("Invalid choice.  Please enter \"Yes\" or \"No\"")
+        
         elif user_dir != "cancel":
             return default_dir
+
         elif user_dir == "cancel":
             return None
 
