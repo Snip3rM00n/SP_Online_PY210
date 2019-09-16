@@ -2,7 +2,7 @@
 Programming In Python - Lesson 9 Assignment 1: Object Oriented Mail Room
 Code Poet: Anthony McKeever
 Start Date: 09/10/2019
-End Date: 
+End Date: 09/15/2019
 """
 
 import os.path
@@ -19,8 +19,8 @@ from support import Helpers
 
 
 class mock_args():
-    donor_list = "./donor_list.csv"
-    email_template = "./email_template.csv"
+    donors = "./donor_list.csv"
+    email = "./email_template.csv"
 
 
 class TestMain(TestCase):
